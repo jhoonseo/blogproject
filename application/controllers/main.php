@@ -11,8 +11,6 @@ class Main extends CI_Controller {
     public function index()
 	{
         $this->load->view('commonhead');
-        var_dump($this->load->view('commonhead', '', true));
-        
         $this->load->view('main');
         $this->load->view('commonfoot');
     }
