@@ -10,31 +10,47 @@ class Main_model extends CI_Model
     function gets()
     {
         return $this->db->query("SELECT * FROM Blog;")->result();
-        
     }
     function get($number)
     {
         //return $this->db->query("SELECT * FROM Blog WHERE count = {$number};")->result();
-        return $this->db->get_where('
-        Blog', array('count'=>$number))->row();
+        return $this->db->get_where('Blog', array('count'=>$number))->row();
     }
-    function check($pass, $count)
+    function alter($count, $password, $name, $title, $content)
     {
-        $result = $this->db->query("SELECT * FROM Blog WHERE count = '{$count}' AND password = '{$pass}';");
-        //return $result;
-        return $this->db->affected_rows();
+        $password_h = $this->db->get_where('Blog', array('count'=>$count))->row()->password;
+        if (password_verify($password, $password_h)) {
+            $this->db->query("UPDATE Blog SET name = '{$name}', title= '{$title}', content = '{$content}' WHERE count = {$count};");
+            return "수정이 완료되었습니다.";
+        } else {
+            return "비밀번호를 확인해주세요.";
+        }
+    }
+
+    /*
+    function check($count, $pass)
+    {
+        //$password_h = hash("sha256", $pass);
+        $encrypted_passwd = password_hash($pass, PASSWORD_DEFAULT);
+        $result = $this->db->query("SELECT * FROM Blog WHERE count = '{$count}' AND password = '{$encrypted_passwd}';");
+        return $result;
+        //return $this->db->affected_rows();
     }
     function update($name, $title, $content, $count, $pass)
     {
-        $this->db->query("UPDATE Blog SET name = '{$name}', title= '{$title}', content = '{$content}' WHERE count ={$count} AND password = '{$pass}';");
+        //$password_h = hash("sha256", $pass);
+        $encrypted_passwd = password_hash($pass, PASSWORD_DEFAULT);
+        $this->db->query("UPDATE Blog SET name = '{$name}', title= '{$title}', content = '{$content}' WHERE count = {$count} AND password = '{$encrypted_passwd}';");
         return "업데이트 완료";
     }
+    */
+    
     function insert($name, $title, $content, $password)
     {
-        //if (isset($a)) && isset($b) && isset($c){ isset( $a, $b, $c )
-        //var_dump($password);
         if ($password && $password !== "0" && $password !== 0) {
-            $this->db->query("INSERT INTO Blog (name, title, content, password) VALUES('{$name}', '{$title}', '{$content}', '{$password}');");
+            //$password_h = hash("sha256", $password);
+            $encrypted_passwd = password_hash($password, PASSWORD_DEFAULT);
+            $this->db->query("INSERT INTO Blog (name, title, content, password) VALUES('{$name}', '{$title}', '{$content}', '{$encrypted_passwd}');");
             return "completed insertion";
         } else {
             return "failed insertion <br> 비밀번호를 체크해주세요."; 

@@ -11,7 +11,7 @@ class Main extends CI_Controller {
     public function index()
 	{
         $this->load->view('commonhead');
-        $this->load->view('main');
+        //$this->load->view('main');
         $this->load->view('commonfoot');
     }
     public function get($number)
@@ -21,7 +21,7 @@ class Main extends CI_Controller {
         $this->load->view('get', array('get' => $get));
         $this->load->view('commonfoot');
     }
-    public function gets() 
+    public function gets()
     {
         $gets = $this->main_model->gets();
         $this->load->view('commonhead');
@@ -35,11 +35,11 @@ class Main extends CI_Controller {
         $content = $this->input->post('content');
         $pass = $this->input->post('password');
         $this->load->view('commonhead');
-        $chk = $this->main_model->check($pass, $count);
-        if ($chk) {
-            echo($this->main_model->update($name, $title, $content, $count, $pass));
+        if ($pass) {
+            $return = $this->main_model->alter($count, $pass, $name, $title, $content);
+            echo $return;    
         } else {
-            echo "<p>비밀번호를 확인해주세요.</p>";
+            echo "수정하려면 비밀번호를 입력해야 합니다.";
         }
         $this->load->view('commonfoot');
     }
